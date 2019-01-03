@@ -1,0 +1,5 @@
+.each-list-item {
+    list-style: none;
+    border: 5px solid cyan;
+    margin: 5px;
+}
