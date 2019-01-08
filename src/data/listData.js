@@ -3,8 +3,10 @@ import * as listItems from './data.json'
 let TOP = 'TOP';
 let BOTTOM = 'BOTTOM';
 let NO_OF_DEFAULT_ITEMS = 5;
-let DEFAULT_FETCHSIZE = NO_OF_DEFAULT_ITEMS - 1
-let webViewContext = { startIndex: 0, endIndex: NO_OF_DEFAULT_ITEMS }
+let
+
+
+webViewContext = { startIndex: 0, endIndex: NO_OF_DEFAULT_ITEMS }
 
 /**
  * Sets the webViewContext which holds the context of start and end indexes of original data source.
@@ -14,14 +16,19 @@ let webViewContext = { startIndex: 0, endIndex: NO_OF_DEFAULT_ITEMS }
  */
 let getWebViewContext = (numOfElementsToChange = NO_OF_DEFAULT_ITEMS, direction) => {
     // If TOP, make the offset as negative.
-    if (direction === TOP) { numOfElementsToChange *= -1 }
+    if (direction === TOP) {
+        if (webViewContext.startIndex < 10) { return webViewContext }
+        else numOfElementsToChange *= -1
+    }
+
     // Add the offset to start and end indexes.
     webViewContext.startIndex += numOfElementsToChange
     webViewContext.endIndex += numOfElementsToChange
     //If the values drop lesser than the defaults, reset the indexes to default values.
-    if (webViewContext.endIndex < DEFAULT_FETCHSIZE) {
+    let fetchSizeMinusOne = NO_OF_DEFAULT_ITEMS - 1
+    if (webViewContext.endIndex < fetchSizeMinusOne) {
         webViewContext.startIndex = 0
-        webViewContext.endIndex = DEFAULT_FETCHSIZE
+        webViewContext.endIndex = fetchSizeMinusOne
     }
     return webViewContext
 }
@@ -34,7 +41,11 @@ let getWebViewContext = (numOfElementsToChange = NO_OF_DEFAULT_ITEMS, direction)
  * @returns :A new array sliced from original datasource
  */
 const getWebViewList = (fetchSize = NO_OF_DEFAULT_ITEMS, scrollDirection = BOTTOM) => {
+    let beforeComputation = webViewContext.startIndex
+    if( beforeComputation === 0 && scrollDirection === TOP) return []
     webViewContext = getWebViewContext(fetchSize, scrollDirection)
+    let afterComputation = webViewContext.startIndex
+    if (afterComputation === 0 &&  beforeComputation === 0 && scrollDirection === TOP) return []
     return listItems.slice(webViewContext.startIndex, webViewContext.endIndex)
 }
 
@@ -48,4 +59,4 @@ const initializeWebViewList = (pageSize = NO_OF_DEFAULT_ITEMS) => {
 }
 
 export default getWebViewList;
-export {initializeWebViewList};
+export { initializeWebViewList };
